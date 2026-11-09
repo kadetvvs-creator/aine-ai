@@ -9,7 +9,7 @@
   4. Генератор (графики matplotlib + Word/PDF/PPT/Excel)
 """
 import sys, os, re, subprocess, json
-sys.path.insert(0, "/home/aine/workspace")
+sys.path.insert(0, "<AINE_HOME>/workspace")
 os.environ.setdefault("MPLCONFIGDIR", "/tmp/mpl-cache")
 os.makedirs("/tmp/mpl-cache", exist_ok=True)
 
@@ -19,7 +19,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from aine_helper import ask
 
-OUT = "/home/aine/workspace/ai_out"
+OUT = "<AINE_HOME>/workspace/ai_out"
 ANALYST = os.environ.get("AI_DOCS_ANALYST", "Qwen2.5-7B-Instruct-Q4_K_M")
 WRITER = os.environ.get("AI_DOCS_WRITER", "Llama-3.1-8B-Instruct-Q4_K_M")
 
@@ -29,7 +29,7 @@ def ask_direct(prompt, model, max_tokens=800):
     import requests as _rq
     base = "http://127.0.0.1:8095" if "7B" in model and "Coder" not in model else "http://127.0.0.1:8080"
     r = _rq.post(base + "/v1/chat/completions",
-                 headers={"Authorization": "Bearer 5yicZ3KPrbRePFaxJvl7MV5D6FNofoBD",
+                 headers={"Authorization": "Bearer " + os.environ.get("LLAMA_API_KEY", ""),
                           "Content-Type": "application/json"},
                  json={"model": model, "messages": [{"role": "user", "content": prompt}],
                        "max_tokens": max_tokens, "temperature": 0.4}, timeout=600)
@@ -42,7 +42,7 @@ def _describe_image(img_bytes):
     try:
         b64 = base64.b64encode(img_bytes).decode()
         r = _rq.post("http://127.0.0.1:8082/v1/chat/completions",
-                     headers={"Authorization": "Bearer 5yicZ3KPrbRePFaxJvl7MV5D6FNofoBD"},
+                     headers={"Authorization": "Bearer " + os.environ.get("LLAMA_API_KEY", "")},
                      json={"model": "vision",
                            "messages": [{"role": "user", "content": [
                                {"type": "image_url", "image_url": {"url": "data:image/png;base64," + b64}},

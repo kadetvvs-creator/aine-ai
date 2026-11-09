@@ -8,10 +8,10 @@
 import sys, os, json, time, subprocess, hashlib, re, urllib.request
 
 ORGAN = "http://127.0.0.1:8080/v1/chat/completions"
-KEY = "5yicZ3KPrbRePFaxJvl7MV5D6FNofoBD"
-PROPOSALS = "/home/aine/workspace/aine/proposals"
-STATE = "/home/aine/workspace/aine/selfdev_state.json"
-SETTINGS = "/home/aine/workspace/aine/selfdev_settings.json"
+KEY = os.environ.get("LLAMA_API_KEY", "")
+PROPOSALS = "<AINE_HOME>/workspace/aine/proposals"
+STATE = "<AINE_HOME>/workspace/aine/selfdev_state.json"
+SETTINGS = "<AINE_HOME>/workspace/aine/selfdev_settings.json"
 SELFDEV_DEFAULTS = {
     "model": "Qwen3-Coder-30B-A3B-Instruct-Q4_K_M",
     "mode": "auto",       # auto | fix | feature
@@ -28,9 +28,9 @@ def load_settings():
         return dict(SELFDEV_DEFAULTS)
 
 FILES = {
-    "proxy.py": "/opt/agent-proxy/proxy.py",
-    "dashboard.py": "/home/aine/workspace/dashboard/dashboard.py",
-    "ail.py": "/home/aine/vokivon/aine/ail.py",
+    "proxy.py": "<INSTALL>/agent-proxy/proxy.py",
+    "dashboard.py": "<AINE_HOME>/workspace/dashboard/dashboard.py",
+    "ail.py": "<AINE_HOME>/vokivon/aine/ail.py",
 }
 
 # 12 путей развития = 12 архетипов

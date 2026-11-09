@@ -1,7 +1,7 @@
 # AINE — ПОЛНАЯ ДОКУМЕНТАЦИЯ ВНЕДРЕНИЯ И ПРИНЦИПА РАБОТЫ
 
 **Автор внедрения:** Новиков Евгений Владимирович (Основатель)
-**Сервер:** 192.168.1.101 (Ubuntu, 8 ядер/16 потоков CPU, 62 ГБ RAM, Radeon 780M iGPU + 48 ГБ GTT)
+**Сервер:** <server-ip> (Ubuntu, 8 ядер/16 потоков CPU, 62 ГБ RAM, Radeon 780M iGPU + 48 ГБ GTT)
 **Дата документа:** 06.11.2026
 **Статус:** внедрено полностью и проверено живыми тестами
 **Связанные документы:** [`plans/autonomous_ai_master_plan.md`](autonomous_ai_master_plan.md) · [`tz/AINE.md`](../tz/AINE.md) · [`SERVER-GUIDE.md`](../SERVER-GUIDE.md)
@@ -104,29 +104,29 @@ AINE работает сама, без человека, по фоновым п�
 
 ## ЧАСТЬ II. ПОЛНОЕ ВНЕДРЕНИЕ НА СЕРВЕР (всё, что сделано)
 
-### 2.1. Компоненты на сервере 192.168.1.101
+### 2.1. Компоненты на сервере <server-ip>
 
 | Компонент | Порт | Что это | Файл |
 |---|---|---|---|
-| **dashboard** (systemd) | 127.0.0.1:8091 | Кабинет + все API AINE | `/home/aine/workspace/dashboard/dashboard.py` |
-| **watcher-loop** | 127.0.0.1:8093 | Автономный цикл AINE: команды→трассы, panel | `/home/aine/vokivon/aine_watcher_loop.py` |
+| **dashboard** (systemd) | 127.0.0.1:8091 | Кабинет + все API AINE | `<AINE_HOME>/workspace/dashboard/dashboard.py` |
+| **watcher-loop** | 127.0.0.1:8093 | Автономный цикл AINE: команды→трассы, panel | `<AINE_HOME>/vokivon/aine_watcher_loop.py` |
 | **llama-server** (systemd) | 127.0.0.1:8080 | Орган: Qwen3-Coder-30B-A3B Q4_K_M | `/opt/llama.cpp/build/bin/llama-server` |
 | **agent-proxy** | 127.0.0.1:8085 | Прокси к органу (шейдер запросов) | из vokivon |
 | **aine-proxy** | 127.0.0.1:8086 | Прокси AINE (роутинг моделей) | из vokivon |
 | **searxng** (docker) | внутри docker-сети | Метапоиск для интернет-знаний | контейнер `searxng` |
 | **Open WebUI** (docker) | 0.0.0.0:3000 | Чат-интерфейс, модель «AINE» (pipe) + инструмент `aine_tool` | контейнер `open-webui` |
-| **nginx** | 80/443/9080/9082 | api.aine-ai.ru (→8091), портал (→8093 /aine-api), Jupyter | `/etc/nginx/sites-*` |
+| **nginx** | 80/443/9080/9082 | api.<your-domain> (→8091), портал (→8093 /aine-api), Jupyter | `/etc/nginx/sites-*` |
 | **Jupyter** | 0.0.0.0:9082 | Канал деплоя (токен в юните) | systemd jupyter |
 
 ### 2.2. Файловая структура на сервере
 
 ```
-/home/aine/workspace/dashboard/          ← КИБИНЕТ (api.aine-ai.ru)
+<AINE_HOME>/workspace/dashboard/          ← КИБИНЕТ (api.<your-domain>)
   dashboard.py                           ← Flask: кабинет + ВСЕ API AINE
   index.html                             ← кабинет (тёмные/светлые темы,
                                            вкладка «ВКМ AINE», 6 под-вкладок)
   *.bak-*                                ← бэкапы каждого деплоя
-/home/aine/workspace/aine/
+<AINE_HOME>/workspace/aine/
   aine.enabled / STOP                    ← вкл/выкл/стоп (kill-switch)
   state.json                             ← состояние watcher (циклы, счётчики)
   commands/*.json → done/                ← очередь команд → обработанные
@@ -143,7 +143,7 @@ AINE работает сама, без человека, по фоновым п�
   web_learn/settings.json, cycle.json, learnings.json
   initiatives.json, initiatives_settings.json
   reports/                               ← сводки AINE
-/home/aine/vokivon/                      ← КОД AINE (Python)
+<AINE_HOME>/vokivon/                      ← КОД AINE (Python)
   aine_watcher_loop.py                   ← главный цикл watcher (nohup)
   aine_watcher_service.py                ← HTTP :8093 (panel, status, api)
   aine/watcher.py                        ← Watcher: резонанс→орган→барьер→
@@ -310,7 +310,7 @@ aine_train_runner.py (nice 19 + taskset + лок executing):
 
 **Проверить всё:** кабинет → вкладка «ВКМ AINE» → «Обзор» (орган ✓/✗) и
 «Обучение» (чек-лист условий) · `curl -H 'X-Cabinet-Auth: <пароль>'`
-`http://192.168.1.101:8091/api/aine/info`
+`http://<server-ip>:8091/api/aine/info`
 
 **Перезапустить dashboard:** `sudo systemctl restart dashboard`
 **Перезапустить watcher:** `pkill -f aine_watcher_loop` (systemd/цикл

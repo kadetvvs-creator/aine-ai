@@ -2,12 +2,12 @@
 # -*- coding: utf-8 -*-
 """Бенчмарк живой памяти AINE: покрытие, задержка, экономия токенов."""
 import sys, time, json, urllib.request
-sys.path.append("/home/aine/vokivon/aine")
+sys.path.append("<AINE_HOME>/vokivon/aine")
 from ail import AineAilEngine
 
-G = "/home/aine/workspace/aine/ail/genome.json"
+G = "<AINE_HOME>/workspace/aine/ail/genome.json"
 ORG = "http://127.0.0.1:8080/v1/chat/completions"
-KEY = "5yicZ3KPrbRePFaxJvl7MV5D6FNofoBD"
+KEY = os.environ.get("LLAMA_API_KEY", "")
 
 QUESTIONS = [
     ("стратегические прогнозы и тренды", "memory"),

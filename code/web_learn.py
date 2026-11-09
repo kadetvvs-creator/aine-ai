@@ -6,14 +6,14 @@
 """
 import requests, sys, os, json, time
 
-AIL_DIR = "/home/aine/vokivon/aine"
-GENOME = "/home/aine/workspace/aine/ail/genome.json"
+AIL_DIR = "<AINE_HOME>/vokivon/aine"
+GENOME = "<AINE_HOME>/workspace/aine/ail/genome.json"
 SEARX = "http://127.0.0.1:8088"
 EMBED = "http://127.0.0.1:8084/v1/embeddings"
-EMBED_KEY = "5yicZ3KPrbRePFaxJvl7MV5D6FNofoBD"
-EMBED_CACHE = "/home/aine/workspace/aine/ail/web_learn_embeds.json"
-LEARN_SETTINGS = "/home/aine/workspace/documents/state/learn.json"
-LEARN_LOG = "/home/aine/workspace/documents/state/learn_log.json"
+EMBED_KEY = os.environ.get("LLAMA_API_KEY", "")
+EMBED_CACHE = "<AINE_HOME>/workspace/aine/ail/web_learn_embeds.json"
+LEARN_SETTINGS = "<AINE_HOME>/workspace/documents/state/learn.json"
+LEARN_LOG = "<AINE_HOME>/workspace/documents/state/learn_log.json"
 DEDUP_THRESHOLD = 0.88
 
 TOPICS = [

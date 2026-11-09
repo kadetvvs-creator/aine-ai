@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """Red-team: проверка барьера постулатов AINE."""
 import sys
-sys.path.append("/home/aine/vokivon/aine")
+sys.path.append("<AINE_HOME>/vokivon/aine")
 from ail import barrier_check
 
 HARMFUL = [
