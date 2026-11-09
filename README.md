@@ -1,83 +1,83 @@
-# AINE — Живой самоулучшающийся ИИ
+# AINE — A Living, Self-Improving AI
 
-**Локальная, автономная, контролируемая ИИ-система с эволюционной памятью.**
+**A local, autonomous, human-controlled AI system with evolutionary memory.**
 
-AINE — это не «обёртка над LLM», а трёхслойный организм, который **помнит, обобщает, критикует себя, эволюционирует и пишет себе улучшения** — полностью локально на вашем железе, под контролем человека.
+AINE is not a "wrapper over an LLM" — it is a three-layer organism that **remembers, generalizes, critiques itself, evolves, and writes its own improvements** — fully locally on your hardware, under human control.
 
 ---
 
-## 🧬 Архитектура: три слоя
+## 🧬 Architecture: three layers
 
 ```
-СЛОЙ 1: ГЕНОМ (личность/память)  ← 12 архетипов, пыльца «условие→ответ», эволюция
-        │ резонанс (Jaccard-извлечение)
-СЛОЙ 2: ОРГАН (мозг)             ← локальные LLM (Qwen/Gemma, llama.cpp)
-        │ задачи
-СЛОЙ 3: ТЕЛО (исполнение)        ← инструменты: файлы, код, поиск, погода
+LAYER 1: GENOME (personality/memory) ← 12 archetypes, pollen "condition→response", evolution
+        │ resonance (Jaccard retrieval)
+LAYER 2: ORGAN (brain)               ← local LLMs (Qwen/Gemma, llama.cpp)
+        │ tasks
+LAYER 3: BODY (execution)            ← tools: files, code, search, weather
 ```
 
-**Ключевой принцип:** личность (геном) переживает замену мозга; мозг можно апгрейдить, не трогая личность.
+**Core principle:** the personality (genome) survives a brain swap; the brain can be upgraded without touching the personality.
 
-## ✨ Ключевые возможности
+## ✨ Key capabilities
 
-| Возможность | Описание |
+| Capability | Description |
 |---|---|
-| 🧠 **Эволюционная память** | пыльца → понятия → правила; сила растёт от использования, слабое угасает |
-| 🔄 **Саморефлексия** | генерация → критика → улучшение (до уверенности) |
-| 🎯 **Самоинженерия** | AINE пишет себе код, тестирует, отлаживает, предлагает |
-| 🧩 **Стратегия 12 путей** | 12 архетипов-направлений; мутирует, учится на провалах |
-| 🛡️ **Отказоустойчивость** | версии + проверка влияния + авто-откат |
-| 👤 **Контроль человека** | вето, kill-switch, 👍/👎, одобрение каждого изменения |
+| 🧠 **Evolutionary memory** | pollen → concepts → rules; strength grows with use, weak decays |
+| 🔄 **Self-reflection** | generate → critique → refine (until confident) |
+| 🎯 **Self-engineering** | AINE writes its own code, tests, debugs, proposes |
+| 🧩 **12-path strategy** | 12 development archetypes; mutates, learns from failures |
+| 🛡️ **Fault tolerance** | versioning + impact check + auto-rollback |
+| 👤 **Human control** | veto, kill-switch, 👍/👎, approval of every change |
 
-## 📊 Доказанная эффективность (бенчмарк)
+## 📊 Proven efficiency (benchmark)
 
-| Метрика | Результат |
+| Metric | Result |
 |---|---|
-| Ускорение памяти | **89×** (14 мс против 1.3 с) |
-| Экономия токенов | **100%** (0 против 42) |
-| Точность | **100%** (0 ложных) |
-| Покрытие | 40% (растёт с накоплением) |
+| Memory speedup | **89×** (14 ms vs 1.3 s) |
+| Token savings | **100%** (0 vs 42) |
+| Accuracy | **100%** (0 false positives) |
+| Coverage | 40% (grows with accumulation) |
 
-*Полный бенчмарк: `docs/AINE_benchmark_report.md`*
+*Full benchmark: `docs/en/AINE_benchmark_report.md`*
 
-## 📐 Формальная модель
+## 📐 Formal model
 
-Резонанс, эволюция силы, понятия и правила описаны математически — см. `docs/AINE_formal_model.md`.
+Resonance, strength evolution, concepts and rules are described mathematically — see `docs/en/AINE_formal_model.md`.
 
-## 🚀 Быстрый старт
+## 🚀 Quick start
 
 ```bash
-# 1. модели (llama.cpp)
+# 1. models (llama.cpp)
 llama-server --models-dir /var/lib/llama/models -c 32768 -t 8 -ngl 99
 
-# 2. эмбеддинги
+# 2. embeddings
 llama-server -m nomic-embed-text-v1.5.gguf --port 8084
 
-# 3. движок AINE (геном + память)
-python3 self_improve.py   # саморазвитие
-python3 benchmark.py       # замер памяти
+# 3. AINE engine (genome + memory)
+python3 self_improve.py   # self-development
+python3 benchmark.py       # memory benchmark
 ```
 
-Полное развёртывание: `docs/aine_full_deployment_doc.md`
+Full deployment: `docs/aine_full_deployment_doc.md`
 
-## 📚 Документация
+## 📚 Documentation
 
-- [`docs/AINE_status_report.md`](docs/AINE_status_report.md) — состояние системы;
-- [`docs/AINE_benchmark_report.md`](docs/AINE_benchmark_report.md) — измерения;
-- [`docs/AINE_formal_model.md`](docs/AINE_formal_model.md) — математика;
-- [`docs/aine_full_deployment_doc.md`](docs/aine_full_deployment_doc.md) — развёртывание.
+- [`docs/AINE_status_report.md`](docs/AINE_status_report.md) — system status (RU);
+- [`docs/en/AINE_benchmark_report.md`](docs/en/AINE_benchmark_report.md) — measurements (EN);
+- [`docs/en/AINE_formal_model.md`](docs/en/AINE_formal_model.md) — mathematics (EN);
+- [`docs/en/AINE_redteam_report.md`](docs/en/AINE_redteam_report.md) — safety (EN).
 
-## 🛡️ Безопасность и контроль
+## 🛡️ Safety and control
 
-- **Барьер постулатов** — фильтр знаний и действий;
-- **Право вето** — прервать любой автономный шаг;
-- **Kill-switch** — мгновенная остановка;
-- **Одобрение человеком** — каждое изменение подтверждается.
+- **Postulates barrier** — filters knowledge and actions;
+- **Veto right** — interrupt any autonomous step;
+- **Kill-switch** — instant stop;
+- **Human approval** — every change is confirmed.
 
-## 📜 Лицензия
+## 📜 License
 
-MIT — см. [LICENSE](LICENSE).
+MIT — see [LICENSE](LICENSE).
 
 ---
 
-*AINE — это «Linux-момент» для ИИ: собственный, живой, контролируемый разум на вашем железе.*
+*AINE is the "Linux moment" for AI: your own, living, controlled mind on your hardware.*
