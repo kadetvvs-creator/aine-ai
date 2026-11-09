@@ -1,0 +1,46 @@
+services:
+  # СЛОЙ 2: ОРГАН — локальный LLM (llama.cpp server)
+  llama-server:
+    image: ghcr.io/ggerganov/llama.cpp:server
+    restart: unless-stopped
+    volumes:
+      - ./models:/models
+    command:
+      - --models-dir /models
+      - --host 0.0.0.0
+      - --port 8080
+      - -c 32768
+      - -t 8
+      - -ngl 99
+      - --api-key ${LLAMA_API_KEY:-}
+    ports:
+      - "8080:8080"
+
+  # Эмбеддинги (nomic-embed, 768-мерный)
+  embed:
+    image: ghcr.io/ggerganov/llama.cpp:server
+    restart: unless-stopped
+    volumes:
+      - ./models:/models
+    command:
+      - -m /models/nomic-embed-text-v1.5.gguf
+      - --embeddings
+      - --host 0.0.0.0
+      - --port 8084
+    ports:
+      - "8084:8084"
+
+  # СЛОЙ 1: ГЕНОМ + СЛОЙ 3: ТЕЛО — движок AINE
+  aine:
+    build: .
+    restart: unless-stopped
+    environment:
+      - GENOME_PATH=/app/genome.json
+      - LLAMA_URL=http://llama-server:8080
+      - EMBED_URL=http://embed:8084
+    depends_on:
+      - llama-server
+      - embed
+    volumes:
+      - ./genome.json:/app/genome.json
+      - ./proposals:/app/proposals
