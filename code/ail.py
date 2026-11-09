@@ -28,12 +28,12 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import urllib.request
 
-EMBED_URL = "http://127.0.0.1:8084/v1/embeddings"
-EMBED_MODEL = "nomic-embed-text-v1.5"
+EMBED_URL = "http://127.0.0.1:8081/v1/embeddings"
+EMBED_MODEL = "bge-m3"
 
 
 def _embed_text(text):
-    """Эмбеддинг текста через llama-embed (:8084). None при ошибке."""
+    """Эмбеддинг текста через BGE-M3 (:8081). None при ошибке."""
     try:
         body = json.dumps({"model": EMBED_MODEL,
                            "input": (text or "")[:2500]}).encode()

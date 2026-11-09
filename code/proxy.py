@@ -53,7 +53,7 @@ VISION_MODEL = os.environ.get("VISION_MODEL", "vision")
 SD_URL = os.environ.get("SD_URL", "http://127.0.0.1:7860")
 IMG_SIZE = os.environ.get("IMG_SIZE", "768x768")
 IMG_STEPS = int(os.environ.get("IMG_STEPS", "4"))
-CHAT_MODEL = os.environ.get("CHAT_MODEL", "Qwen3.6-35B-A3B-UD-Q4_K_M")
+CHAT_MODEL = os.environ.get("CHAT_MODEL", "Qwen2.5-7B-Instruct-Q4_K_M")
 DEEP_MODEL = os.environ.get("DEEP_MODEL", "Qwen3.6-35B-A3B-UD-Q4_K_M")
 DEEP_WORDS = ["создай", "напиши", "проанализируй", "сделай", "разработай",
               "исправь", "сгенерируй", "вычисли", "проверь", "оптимизируй",

@@ -105,7 +105,7 @@ def github_pull():
 
 
 def _embed(preview):
-    """Эмбеддинг превью (nomic-embed) для семантического поиска."""
+    """Эмбеддинг превью (BGE-M3) для семантического поиска."""
     try:
         import sys
         sys.path.append("<AINE_HOME>/vokivon/aine")
