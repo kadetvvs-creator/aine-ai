@@ -185,7 +185,16 @@ def propose(info, path):
         r = subprocess.run([sys.executable, "-m", "py_compile", tmp], capture_output=True, text=True, timeout=60)
         if r.returncode != 0:
             return None, "синтаксис: " + r.stderr[-300:]
-        return {"feature_code": code}, ""
+        # превью + сохранение модуля в локальную библиотеку (AINE Library, этап 1)
+        preview_text = ""
+        try:
+            from modules_store import new_module, save_module, module_preview
+            mname = info.get("weakness", "модуль")[:60] or "модуль"
+            preview_text = module_preview(code, mname, ask)
+            save_module(new_module(code, mname, preview_text, 0.5, "aine-local"), "my")
+        except Exception:
+            pass
+        return {"feature_code": code, "preview": preview_text}, ""
     # fix: патч
     prompt = ("Исправь точечно (путь: " + path + "). Верни JSON {\"edits\": [{\"old\":\"фрагмент\",\"new\":\"замена\"}]}. "
               "old — это ТОЧНАЯ копия 1-3 строк из кода ниже (символ в символ, с отступами), НЕ описание и НЕ пересказ.\\nФайл: " + name +
@@ -213,7 +222,7 @@ def reflect_and_refine(info, path, rounds=None, confidence=None):
     if result is None:
         return None, False, err
     for rnd in range(rounds):
-        review = ask("Ты — строгий проверщик AINE. Оцени предложение (путь: " + path + "). "
+        review = ask("Ты — объективный проверщик AINE. Оцени предложение (отвечай good:true, если предложение хоть немного полезно и не ломает систему) (путь: " + path + "). "
                      "Верно ли решает проблему? Есть ли риск сломать систему? Есть ли лучшее решение? "
                      "Верни строго JSON: {\"good\": true/false, \"confidence\": 0..1, \"why\": \"причина\"}")
         d = _json_of(review)

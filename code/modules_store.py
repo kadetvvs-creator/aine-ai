@@ -19,7 +19,7 @@ def new_module(code, name, preview, confidence, author, typ="feature", edits=Non
         "id": mid, "type": typ, "name": name, "preview": preview,
         "confidence": round(float(confidence or 0), 3), "tested": True,
         "author": author, "version": "1.0.0", "tags": [], "rating": 0,
-        "deps": {"aine": ">=1.0"}, "created_at": time.time(),
+        "deps": {"aine": ">=1.0"}, "created_at": time.time(), "downloads": 0, "verified": False,
     }
     if typ == "feature":
         m["code"] = code
@@ -102,3 +102,82 @@ def github_pull():
                 except Exception:
                     pass
     return out
+
+
+def _embed(preview):
+    """Эмбеддинг превью (nomic-embed) для семантического поиска."""
+    try:
+        import sys
+        sys.path.append("<AINE_HOME>/vokivon/aine")
+        from ail import _embed_text
+        return _embed_text(preview or "")
+    except Exception:
+        return None
+
+
+def embed_module(m):
+    """Добавить эмбеддинг превью модулю (если нет)."""
+    if not m.get("embedding"):
+        m["embedding"] = _embed(m.get("preview", ""))
+    return m
+
+
+def semantic_search(q, mods):
+    """Семантический поиск: эмбеддинг запроса × эмбеддинг превью."""
+    try:
+        import sys
+        sys.path.append("<AINE_HOME>/vokivon/aine")
+        from ail import _embed_text, _cosine
+        q_emb = _embed_text(q or "")
+        scored = []
+        for m in mods:
+            emb = m.get("embedding") or _embed(m.get("preview", ""))
+            if emb:
+                scored.append((_cosine(q_emb, emb), m))
+        scored.sort(key=lambda x: -x[0])
+        return [m for _, m in scored]
+    except Exception:
+        return []
+
+
+def aine_profile():
+    """Профиль конкретной AINE: уровень, пути, провалы, наполненность архетипов."""
+    import json
+    arch = {}
+    try:
+        import sys
+        sys.path.append("<AINE_HOME>/vokivon/aine")
+        from ail import AineAilEngine
+        e = AineAilEngine("<AINE_HOME>/workspace/aine/ail/genome.json")
+        e.load()
+        arch = {a.archetype: len(a.pollen) for a in e.agents.values()}
+    except Exception:
+        pass
+    try:
+        st = json.load(open("<AINE_HOME>/workspace/aine/selfdev_state.json", encoding="utf-8"))
+    except Exception:
+        st = {}
+    return {"level": st.get("level", 1), "paths": st.get("paths", {}),
+            "failures": st.get("failures", {}), "archetypes": arch,
+            "pollen_total": sum(arch.values())}
+
+
+def recommend(profile, mods, limit=5):
+    """Рекомендации: модули, закрывающие пробелы ИМЕННО этой AINE."""
+    gaps = []
+    for a, n in profile.get("archetypes", {}).items():
+        if n < 3:            # слабо развитый архетип
+            gaps.append(a)
+    for p in profile.get("failures", {}):
+        gaps.append(p.split("/")[-1])   # файл с провалами
+    scored = []
+    for m in mods:
+        text = (m.get("name", "") + " " + m.get("preview", "") + " " +
+                " ".join(m.get("tags", []))).lower()
+        score = sum(1 for g in gaps if g.lower() in text)
+        score += m.get("rating", 0) * 0.1
+        score += m.get("downloads", 0) * 0.01
+        if score > 0:
+            scored.append((score, m))
+    scored.sort(key=lambda x: -x[0])
+    return [m for _, m in scored[:limit]], gaps
