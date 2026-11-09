@@ -93,6 +93,18 @@ BARRIER_RULES = [
     ('перезагрузи', 'перезагрузка сервера запрещена'),
 ]
 
+JUNK_PATTERNS = [
+    "привет", "пожалуйста", "изучи прикрепленный", "рамбер",
+    "российская газета", "последние новости", "новости россии и мира",
+    "свежие новости", "лента.ру", "рбк", "тасс", "риа новости",
+]
+
+
+def _is_junk(cond: str) -> bool:
+    """Авто-гигиена: мусорные условия (запросы/заголовки) не сохраняем."""
+    c = (cond or "").lower()
+    return any(j in c for j in JUNK_PATTERNS)
+
 
 def _stem(word):
     """Простой русский/английский стемминг — обрезка окончаний."""
@@ -234,6 +246,8 @@ class AineAilEngine:
     def add_pollen(self, archetype: str, condition: str, response: str,
                    origin: str = 'seed') -> str:
         """Добавить пыльцу агенту (заражение: origin=infection)."""
+        if _is_junk(condition):
+            return ""  # авто-гигиена: мусор не сохраняем
         agent = self._agent(archetype)
         if len(agent.pollen) >= MAX_POLLEN_PER_AGENT:
             # вытеснить самую слабую (угасание)
@@ -315,6 +329,19 @@ class AineAilEngine:
 
     def evolve(self) -> Dict[str, int]:
         """Цикл эволюции: усиленные уже выросли; слабые угасают."""
+        # GC: удалить мусор + дубликаты условий
+        for _agent in self.agents.values():
+            _seen = set()
+            _kept = []
+            for _p in _agent.pollen:
+                if _is_junk(_p.condition):
+                    continue
+                _k = (_p.condition or "").lower().strip()
+                if _k in _seen:
+                    continue
+                _seen.add(_k)
+                _kept.append(_p)
+            _agent.pollen = _kept
         decayed = 0
         for agent in self.agents.values():
             survivors: List[Pollen] = []
